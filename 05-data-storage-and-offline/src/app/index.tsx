@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { File, Paths } from "expo-file-system";
 import * as SecureStore from "expo-secure-store";
 import * as SQLite from "expo-sqlite";
 import { useState } from "react";
@@ -9,6 +10,7 @@ const db = SQLite.openDatabaseSync("demo.db");
 
 export default function Index() {
     const [output, setOutput] = useState("");
+    const [fileOutput, setFileOutput] = useState("");
     const [data, setData] = useState("");
 
     const createTable = () => {
@@ -71,9 +73,40 @@ export default function Index() {
         await SecureStore.setItemAsync("token", "securetoken123");
     };
 
+    const demoFile = new File(Paths.document, "demo.txt");
+
+    const writeFile = async () => {
+        try {
+            demoFile.write("Hello expo file system");
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const readFile = async () => {
+        const data = await demoFile.text();
+
+        setFileOutput(data);
+        return data;
+    };
+
+    const appendFile = async () => {
+        const oldData = await readFile();
+
+        demoFile.write(oldData + "\n This is new data.");
+    };
+
+    const copiedFile = new File(Paths.document, "copy-demo.txt");
+
+    const copyFile = async () => {
+        demoFile.copy(copiedFile);
+
+        setFileOutput("File copied successfully.");
+    };
+
     return (
         <View style={styles.container}>
-            <Text>Edit src/app/index.tsx to edit this screen.</Text>
+            <Text>Data-Storage And Offline Support Demo</Text>
         </View>
     );
 }
