@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -39,6 +40,10 @@ export default function Index() {
             ["name", "Gautam"],
             ["lastName", "Singh"],
         ]);
+    };
+
+    const saveToken = async () => {
+        await SecureStore.setItemAsync("token", "securetoken123");
     };
 
     return (
